@@ -5,8 +5,8 @@ me@fredefox.eu /^._
      (/\\_  (/\\_
 '''
 import sqlite3
-from numpy import * #matrix, append, zeros, transpose
-from numpy.linalg import inv
+from numpy import matrix, append, ones, transpose, dot
+from numpy.linalg import inv, norm
 conn = sqlite3.connect("data.sqlite3")
 
 def get_data(sql):
@@ -93,5 +93,6 @@ if __name__ == "__main__":
     ys = get_data("SELECT * FROM Redshift_Test_Y")
     y_values = list(map(lambda x: x[0], ys))
     zipd = list(zip(xs, y_values))
-    l_reg = lin_reg(zipd)
+    # I'm supposing that I shouldn't train another model.
+    # l_reg2 = lin_reg(zipd)
     print("Mean squared error (test-data): {}".format(mse(zipd, l_reg)))
