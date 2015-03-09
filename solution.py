@@ -23,8 +23,9 @@ def variance(y):
     m = mean(y)
     return sum(list(map(lambda y: (y - m)**2, y))) / len(y)
 
-# This is algorithm 3 from the book
-def lin_reg(S):
+# Returns the parameters of a linear regression model given data `S`
+# The returned object is a numpy-matrix
+def lin_reg_params(S):
     """ Please note that I'm trying to use the names from
     the lecture notes but it's a bit difficult to read because
     the x-vectors are in bold differing them from the y's that are
@@ -37,11 +38,19 @@ def lin_reg(S):
     X_t = transpose(X)
     t = inv(dot(X_t, X))
     w = dot(dot(t, X_t), y)
-    n, _ = w.shape
-    b = w[n-1, 0]
-    w = w[0:n-1, 0]
+    return w
+
+def affine_model(w):
     w_t = transpose(w)
+    n, _ = w.shape
+    b = w_t[0, n-1]
+    w = w_t[0, 0:n-1]
     return lambda x: dot(w_t, x) + b
+
+# This is algorithm 3 from the book
+def lin_reg(S):
+    return affine_model(lin_reg_params(S))
+
 
 if __name__ == "__main__":
     # Question 1
@@ -57,5 +66,5 @@ if __name__ == "__main__":
     print("Sample variance: {}".format(s_var))
     xs = redshift_x()
     zipd = list(zip(xs, y_values))
-    l_reg = lin_reg(zipd)
-    print("Linear regression: {}".format(l_reg))
+    reg_params = lin_reg_params(zipd)
+    print("Linear regression parameters:\n{}".format(reg_params))
