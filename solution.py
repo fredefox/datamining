@@ -23,10 +23,11 @@ def variance(y):
     m = mean(y)
     return sum(list(map(lambda y: (y - m)**2, y))) / len(y)
 
-# Returns the parameters of a linear regression model given data `S`
-# The returned object is a numpy-matrix
 def lin_reg_params(S):
-    """ Please note that I'm trying to use the names from
+    """Returns the parameters of a linear regression model given
+    data `S` The returned object is a numpy-matrix.
+
+    Please note that I'm trying to use the names from
     the lecture notes but it's a bit difficult to read because
     the x-vectors are in bold differing them from the y's that are
     just values and are not emphasised """
@@ -47,18 +48,18 @@ def affine_model(w):
     w_t = w_t[0, 0:n-1]
     return lambda x: (dot(w_t, x) + b)[0,0]
 
-# This is algorithm 3 from the book
 def lin_reg(S):
+    """This is algorithm 3 from the book"""
     return affine_model(lin_reg_params(S))
 
-# This function calculates the mean-squared-error
-# S is on the form:
-# [(x0, y0), ..., [(xn, yn)] \in (X * Y)^n
-# f is on the form:
-# f : x -> y
-# where x \in X, y \in Y
-# Y is the set of real numbers
 def mse(S, f):
+    """This function calculates the mean-squared-error
+    S is on the form:
+    [(x0, y0), ..., [(xn, yn)] \in (X * Y)^n
+    f is on the form:
+    f : x -> y
+    where x \in X, y \in Y
+    Y is the set of real numbers"""
     y = transpose(matrix(list(map(lambda s: s[1], S))))
     x = matrix(list(map(lambda s: s[0], S)))
     g = lambda s: (s[1] - f(s[0]))**2
