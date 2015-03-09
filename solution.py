@@ -9,12 +9,8 @@ from numpy import * #matrix, append, zeros, transpose
 from numpy.linalg import inv
 conn = sqlite3.connect("data.sqlite3")
 
-# Question 1
-def redshift_x():
-    return conn.execute("SELECT * FROM Redshift_Train_X").fetchall()
-
-def redshift_y():
-    return conn.execute("SELECT * FROM Redshift_Train_Y").fetchall()
+def get_data(sql):
+    return conn.execute(sql).fetchall()
 
 def mean(y):
     return sum(y)/len(y)
@@ -73,7 +69,7 @@ if __name__ == "__main__":
     # ------------
     # sample mean
     # `ys` are a list of vectors
-    ys = redshift_y()
+    ys = get_data("SELECT * FROM Redshift_Train_Y")
     # `y_values` is a list of values
     y_values = list(map(lambda x: x[0], ys))
     s_mean = mean(y_values)
@@ -84,7 +80,7 @@ if __name__ == "__main__":
     # Question 1.3
     # ------------
     # ### Question 1.3.1 ###
-    xs = redshift_x()
+    xs = get_data("SELECT * FROM Redshift_Train_X")
     zipd = list(zip(xs, y_values))
     reg_params = lin_reg_params(zipd)
     print("Linear regression parameters:\n{}".format(reg_params))
@@ -92,3 +88,10 @@ if __name__ == "__main__":
     l_reg = lin_reg(zipd)
     print("Mean squared error: {}".format(mse(zipd, l_reg)))
     # ### Question 1.3.3 ###
+    # Now we calculate the same quantities just on the *test* data.
+    xs = get_data("SELECT * FROM Redshift_Test_X")
+    ys = get_data("SELECT * FROM Redshift_Test_Y")
+    y_values = list(map(lambda x: x[0], ys))
+    zipd = list(zip(xs, y_values))
+    l_reg = lin_reg(zipd)
+    print("Mean squared error (test-data): {}".format(mse(zipd, l_reg)))
