@@ -44,13 +44,26 @@ def affine_model(w):
     w_t = transpose(w)
     n, _ = w.shape
     b = w_t[0, n-1]
-    w = w_t[0, 0:n-1]
-    return lambda x: dot(w_t, x) + b
+    w_t = w_t[0, 0:n-1]
+    return lambda x: (dot(w_t, x) + b)[0,0]
 
 # This is algorithm 3 from the book
 def lin_reg(S):
     return affine_model(lin_reg_params(S))
 
+# This function calculates the mean-squared-error
+# S is on the form:
+# [(x0, y0), ..., [(xn, yn)] \in (X * Y)^n
+# f is on the form:
+# f : x -> y
+# where x \in X, y \in Y
+# Y is the set of real numbers
+def mse(S, f):
+    y = transpose(matrix(list(map(lambda s: s[1], S))))
+    x = matrix(list(map(lambda s: s[0], S)))
+    g = lambda s: (s[1] - f(s[0]))**2
+    s = sum(list(map(g, S)))
+    return s / len(S)
 
 if __name__ == "__main__":
     # Question 1
@@ -68,3 +81,5 @@ if __name__ == "__main__":
     zipd = list(zip(xs, y_values))
     reg_params = lin_reg_params(zipd)
     print("Linear regression parameters:\n{}".format(reg_params))
+    l_reg = lin_reg(zipd)
+    print("Mean squared error: {}".format(mse(zipd, l_reg)))
