@@ -68,6 +68,9 @@ def mse(S, f):
 
 if __name__ == "__main__":
     # Question 1
+    # ==========
+    # Question 1.2
+    # ------------
     # sample mean
     # `ys` are a list of vectors
     ys = redshift_y()
@@ -78,9 +81,14 @@ if __name__ == "__main__":
     # sample variance
     s_var = variance(y_values)
     print("Sample variance: {}".format(s_var))
+    # Question 1.3
+    # ------------
+    # ### Question 1.3.1 ###
     xs = redshift_x()
     zipd = list(zip(xs, y_values))
     reg_params = lin_reg_params(zipd)
     print("Linear regression parameters:\n{}".format(reg_params))
+    # ### Question 1.3.2 ###
     l_reg = lin_reg(zipd)
     print("Mean squared error: {}".format(mse(zipd, l_reg)))
+    # ### Question 1.3.3 ###
