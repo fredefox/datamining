@@ -5,7 +5,7 @@ me@fredefox.eu /^._
      (/\\_  (/\\_
 '''
 import sqlite3
-from numpy import matrix, append, ones, transpose, dot
+from numpy import matrix, append, ones, transpose, dot, subtract
 from numpy.linalg import inv, norm
 conn = sqlite3.connect("data.sqlite3")
 
@@ -62,6 +62,26 @@ def mse(S, f):
     s = sum(list(map(g, S)))
     return s / len(S)
 
+def euclid(x, y):
+    return norm(subtract(x, y))
+
+# This funciton might look more pretty with a fold
+# the pythonic name for fold is `reduce`
+def argmin(S, f):
+    # Right identity for `<`
+    m = float("inf")
+    res = None
+    for s in S:
+        s_ = f(s)
+        if s_ < m:
+            m = s_
+            res = s
+    return res
+
+def nearest_neighbor(d, S, x):
+    (x_min, y_min) = argmin(S, lambda pair: d(pair[0], x))
+    return y_min
+
 if __name__ == "__main__":
     # Question 1
     # ==========
@@ -96,3 +116,12 @@ if __name__ == "__main__":
     # I'm supposing that I shouldn't train another model.
     # l_reg2 = lin_reg(zipd)
     print("Mean squared error (test-data): {}".format(mse(zipd, l_reg)))
+    # Question 2
+    # ==========
+    keystrokes_x = get_data("SELECT * FROM Keystrokes_Train_X;")
+    keystrokes_y = get_data("SELECT * FROM Keystrokes_Train_Y;")
+    zipd = list(zip(keystrokes_y, keystrokes_x))
+    for s in zipd:
+        x, _y = s
+        y_min = nearest_neighbor(euclid, zipd, x)
+        print("x: {}, y_min: {}".format(x, y_min))
