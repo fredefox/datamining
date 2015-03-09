@@ -21,7 +21,7 @@ def mean(y):
 
 def variance(y):
     m = mean(y)
-    return sum(map(lambda y: (y - m)**2, y)) / len(y)
+    return sum(list(map(lambda y: (y - m)**2, y))) / len(y)
 
 # This is algorithm 3 from the book
 def lin_reg(S):
@@ -29,10 +29,10 @@ def lin_reg(S):
     the lecture notes but it's a bit difficult to read because
     the x-vectors are in bold differing them from the y's that are
     just values and are not emphasised """
-    y = matrix(map(lambda s: s[1], S))
+    y = matrix(list(map(lambda s: s[1], S)))
     # `x` is a matrix
-    x = matrix(map(lambda s: s[0], S))
-    z = zeros((x.shape[0], 1), int)
+    x = matrix(list(map(lambda s: s[0], S)))
+    z = ones((x.shape[0], 1), int)
     X = append(x, z, axis=1)
     # I tried with the data and
     #   (X^T * X)^(-1)
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     # `ys` are a list of vectors
     ys = redshift_y()
     # `y_values` is a list of values
-    y_values = map(lambda x: x[0], ys)
+    y_values = list(map(lambda x: x[0], ys))
     s_mean = mean(y_values)
     print("Sample mean: {}".format(s_mean))
     # sample variance
