@@ -12,9 +12,11 @@ conn = sqlite3.connect("data.sqlite3")
 def get_data(sql):
     return conn.execute(sql).fetchall()
 
+# Also available as numpy.mean
 def mean(y):
     return sum(y)/len(y)
 
+# Also available as numpy.var
 def variance(y):
     m = mean(y)
     return sum(list(map(lambda y: (y - m)**2, y))) / len(y)
