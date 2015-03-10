@@ -120,8 +120,15 @@ if __name__ == "__main__":
     # ==========
     keystrokes_x = get_data("SELECT * FROM Keystrokes_Train_X;")
     keystrokes_y = get_data("SELECT * FROM Keystrokes_Train_Y;")
-    zipd = list(zip(keystrokes_y, keystrokes_x))
-    for s in zipd:
-        x, _y = s
-        y_min = nearest_neighbor(euclid, zipd, x)
-        print("x: {}, y_min: {}".format(x, y_min))
+    zipd = list(zip(keystrokes_x, keystrokes_y))
+    # Map over Test_X
+    keystrokes_test_x = get_data("SELECT * FROM Keystrokes_Test_X;")
+    l = list(map(lambda x:
+        nearest_neighbor(euclid, zipd, x),
+        keystrokes_test_x))
+    # Compare to Test_Y
+    keystrokes_test_y = get_data("SELECT * FROM Keystrokes_Test_Y;")
+    zipd = list(zip(l, keystrokes_test_y))
+    l = list(map(lambda pair: pair[0] == pair[1], zipd))
+    prec = l.count(True)/len(l)
+    print("Nearest-neighbor precision: {}".format(prec))
