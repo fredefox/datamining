@@ -5,8 +5,11 @@ me@fredefox.eu /^._
      (/\\_  (/\\_
 '''
 import sqlite3
-from numpy import matrix, append, ones, transpose, dot, subtract
-from numpy.linalg import inv, norm
+from numpy import \
+    matrix, append, ones, \
+    transpose, dot, subtract, \
+    outer, argsort
+from numpy.linalg import inv, norm, eig
 conn = sqlite3.connect("data.sqlite3")
 
 def get_data(sql):
@@ -83,6 +86,26 @@ def argmin(S, f):
 def nearest_neighbor(d, S, x):
     (x_min, y_min) = argmin(S, lambda pair: d(pair[0], x))
     return y_min
+
+def pca(data, m):
+    S_len = len(data)
+    data = list(map(lambda x: matrix(x).T, data))
+    mn = sum(data)/S_len
+    l = list(map(lambda x: outer(x - mn, x - mn), data))
+    S = sum(l)/S_len
+    eig_val, eig_vec = eig(S)
+    idx = argsort(eig_val[::-1])
+    eig_val = eig_val[idx]
+    eig_vec = eig_vec[idx]
+    # U_m is defined to have the first `m` eigenvectors
+    # This is a super-weird syntax for slicing but it should work
+    U_m = eig_vec[0:,0:m]
+    z = list(map(lambda x: U_m.T.dot(x - mn), data))
+    # dec : \mathbb{R}^m -> \mathbb{R}^n
+    dec = lambda x: mn + U_m.dot(x)
+    # dec : \mathbb{R}^n -> \mathbb{R}^m
+    enc = lambda x: U_m.T.dot(x - mn)
+    return mn, U_m, z, dec, enc
 
 if __name__ == "__main__":
     # Question 1
