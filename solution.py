@@ -120,6 +120,8 @@ if __name__ == "__main__":
     print("Mean squared error (test-data): {}".format(mse(zipd, l_reg)))
     # Question 2
     # ==========
+    # Question 2.1
+    # ------------
     keystrokes_x = get_data("SELECT * FROM Keystrokes_Train_X;")
     keystrokes_y = get_data("SELECT * FROM Keystrokes_Train_Y;")
     zipd = list(zip(keystrokes_x, keystrokes_y))
@@ -134,3 +136,5 @@ if __name__ == "__main__":
     l = list(map(lambda pair: pair[0] == pair[1], zipd))
     prec = l.count(True)/len(l)
     print("Nearest-neighbor precision: {}".format(prec))
+    # Question 2.2
+    # ------------
