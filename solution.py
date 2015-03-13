@@ -126,7 +126,7 @@ def cluster(S, k):
         if not compr:
             break
         prev = curr
-    return prev
+    return curr
 
 def partition(S, means):
     d = list((m, []) for m in means)
@@ -210,11 +210,26 @@ if __name__ == "__main__":
     encoded = list(map(lambda x: enc(matrix(x).T), keystr))
     # encoded now is a list [(x, y)] of the all the observation
     # mapped down to \mathbb{R}^2
-    from matplotlib.pyplot import scatter, show
+    import matplotlib.pyplot as plt
     tpls = list(map(lambda x: (x[0,0], x[1,0]), encoded))
     xs, ys = list(zip(*tpls))
     # Plot the things
-    scatter(xs, ys)
-    show()
+    #plt.scatter(xs, ys)
+    #plt.show()
     # TODO: How many components are necessary to "explain 90 % of the variance"
     # Read sec. 5.2 in the lecture notes to understand this
+    # Question 2.3
+    # ------------
+    clstrs = cluster(keystr, 2)
+    plt.rc("axes", color_cycle=["c", "m", "y", "k"])
+    from itertools import cycle
+    # I can run this multiple times and get different results because
+    # I choose the initial cluster-centers randomly which aparantly
+    # has an impact on the resulting clusters
+    # TODO: Do better color-cycling
+    for (m, clstr), clr in zip(clstrs, cycle(["c", "m", "y", "k"])):
+        clstr_proj = list(map(lambda x: enc(x.T), clstr))
+        clstr_proj = list(map(lambda x: (x[0,0], x[1,0]), clstr_proj))
+        xs, ys = list(zip(*clstr_proj))
+        plt.scatter(xs, ys, color = clr)
+    plt.show()
