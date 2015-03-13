@@ -112,14 +112,18 @@ def cluster(S, k):
     """ S: array of vectors
     k: number of clusters
     returns: [(my, s)] where my is the centroid and s is the cluster"""
+    S = list(map(matrix, S))
     means = []
     for i in range(k):
         means.append(choice(S))
-    prev = None
+    prev = list((None, []) for _ in range(k))
     while True:
         curr = partition(S, means)
         curr = reloc_ctr(curr)
-        if prev == curr:
+        # Now check if the partitions have changed
+        compr = list(() for (a, b) in zip(prev, curr) if a[1] != b[1])
+        # `compr` is empty iff all partitions are equal
+        if not compr:
             break
         prev = curr
     return prev
