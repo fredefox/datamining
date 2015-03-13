@@ -161,3 +161,19 @@ if __name__ == "__main__":
     print("Nearest-neighbor precision: {}".format(prec))
     # Question 2.2
     # ------------
+    keystr = get_data("SELECT * FROM Keystrokes_Test_X")
+    # Perform PCA
+    mn, princ_comp, proj, dec, enc = pca(keystr, 2)
+    # TODO: Plot eigenspectrum
+    # Project all observation down in the plane
+    encoded = list(map(lambda x: enc(matrix(x).T), keystr))
+    # encoded now is a list [(x, y)] of the all the observation
+    # mapped down to \mathbb{R}^2
+    from matplotlib.pyplot import scatter, show
+    tpls = list(map(lambda x: (x[0,0], x[1,0]), encoded))
+    xs, ys = list(zip(*tpls))
+    # Plot the things
+    scatter(xs, ys)
+    show()
+    # TODO: How many components are necessary to "explain 90 % of the variance"
+    # Read sec. 5.2 in the lecture notes to understand this
