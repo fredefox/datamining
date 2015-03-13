@@ -10,6 +10,7 @@ from numpy import \
     transpose, dot, subtract, \
     outer, argsort
 from numpy.linalg import inv, norm, eig
+from random import choice
 conn = sqlite3.connect("data.sqlite3")
 
 def get_data(sql):
@@ -106,6 +107,42 @@ def pca(data, m):
     # dec : \mathbb{R}^n -> \mathbb{R}^m
     enc = lambda x: U_m.T.dot(x - mn)
     return mn, U_m, z, dec, enc
+
+def cluster(S, k):
+    """ S: array of vectors
+    k: number of clusters
+    returns: [(my, s)] where my is the centroid and s is the cluster"""
+    means = []
+    for i in range(k):
+        means.append(choice(S))
+    prev = None
+    while True:
+        curr = partition(S, means)
+        curr = reloc_ctr(curr)
+        if prev == curr:
+            break
+        prev = curr
+    return prev
+
+def partition(S, means):
+    d = list((m, []) for m in means)
+    for s in S:
+        i, m = argmin(enumerate(means), lambda pr: euclid(pr[1],s))
+        m, l = d[i]
+        l.append(s)
+    return list(d)
+
+def reloc_ctr(S):
+    for i, tpl in enumerate(S):
+        S_i = tpl[1]
+        if not S_i:
+            # S_i is empty
+            # TODO: What should be the new mean if the set is empty?
+            n_m = 0
+        else:
+            n_m = mean(S_i)
+        S[i] = (n_m, S_i)
+    return S
 
 if __name__ == "__main__":
     # Question 1
