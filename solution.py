@@ -1,4 +1,9 @@
+#! /usr/bin/env python3
 '''
+This file must be executed with python3
+
+For instance `2/3 == 0` in python2 whereas `2/3 > 0` in python3
+
 me@fredefox.eu /^._
  ,___,--~~~~--' /'~
  `~--~\ )___,)/'
