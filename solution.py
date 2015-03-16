@@ -115,6 +115,20 @@ def pca(data, m):
     dec = lambda x: mn + U_m.dot(x)
     # dec : \mathbb{R}^n -> \mathbb{R}^m
     enc = lambda x: U_m.T.dot(x - mn)
+
+    # TODO: Place this somewhere else!
+    import matplotlib.pyplot as plt
+    # plt.scatter()
+    from numpy import cumsum
+    cumulative = cumsum(eig_val/sum(eig_val))
+    x, y = zip(*list(enumerate(eig_val)))
+    plt.title("Eigen spectrum")
+    plt.scatter(x, y)
+    plt.show()
+    from bisect import bisect
+    prec = .9
+    print("We need {} eigen-vectors to account for {} of the variance". \
+        format(bisect(cumulative, prec), prec))
     return mn, U_m, z, dec, enc
 
 def cluster(S, k):
@@ -214,7 +228,9 @@ if __name__ == "__main__":
     keystr = get_data("SELECT * FROM Keystrokes_Test_X")
     # Perform PCA
     mn, princ_comp, proj, dec, enc = pca(keystr, 2)
-    # TODO: Plot eigenspectrum
+    # TODO: Refactor the plotting of the eigenspectrum.
+    # The eigenspectrum is examplified on slide 21 in lecture slide
+    # Principal Component Analysis
     # Project all observation down in the plane
     encoded = list(map(lambda x: enc(matrix(x).T), keystr))
     # encoded now is a list [(x, y)] of the all the observation
@@ -223,13 +239,18 @@ if __name__ == "__main__":
     tpls = list(map(lambda x: (x[0,0], x[1,0]), encoded))
     xs, ys = list(zip(*tpls))
     # Plot the things
-    #plt.scatter(xs, ys)
-    #plt.show()
-    # TODO: How many components are necessary to "explain 90 % of the variance"
+    plt.title("Keystroke test data")
+    plt.scatter(xs, ys)
+    plt.show()
+    # TODO: Refactor showing how many components are necessary
+    # to "explain 90 % of the variance"a
+    # The asnwer is on slide 21 in lecture slide Principal Component Analysis
     # Read sec. 5.2 in the lecture notes to understand this
     # Question 2.3
     # ------------
+    keystr = get_data("SELECT * FROM Keystrokes_Train_X")
     clstrs = cluster(keystr, 2)
+    plt.title("Clustering analysis Keystroke Training Data")
     plt.rc("axes", color_cycle=["c", "m", "y", "k"])
     from itertools import cycle
     # I can run this multiple times and get different results because
