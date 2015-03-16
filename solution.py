@@ -100,9 +100,13 @@ def pca(data, m):
     l = list(map(lambda x: outer(x - mn, x - mn), data))
     S = sum(l)/S_len
     eig_val, eig_vec = eig(S)
-    idx = argsort(eig_val[::-1])
-    eig_val = eig_val[idx]
-    eig_vec = eig_vec[idx]
+    # I saw this in Jespers solution
+    # TODO: It *should* be necessary to sort the result from `eig`
+    # since it does not guarantee the order of the eigen-vectors
+    # [http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.eig.html]
+    #idx = argsort(eig_val[::-1])
+    #eig_val = eig_val[idx]
+    #eig_vec = eig_vec[idx]
     # U_m is defined to have the first `m` eigenvectors
     # This is a super-weird syntax for slicing but it should work
     U_m = eig_vec[0:,0:m]
