@@ -137,12 +137,12 @@ def cluster(S, k):
     k: number of clusters
     returns: [(my, s)] where my is the centroid and s is the cluster"""
     S = list(map(matrix, S))
-    means = []
-    for i in range(k):
-        means.append(choice(S))
-    prev = list((None, []) for _ in range(k))
+    prev = list((choice(S), []) for _ in range(k))
+    m, _ = prev[0]
+    # Assert k>0
+    prev[0] = (m, S)
     while True:
-        curr = partition(S, means)
+        curr = partition(prev)
         curr = reloc_ctr(curr)
         # Now check if the partitions have changed
         compr = list(() for (a, b) in zip(prev, curr) if a[1] != b[1])
@@ -152,13 +152,17 @@ def cluster(S, k):
         prev = curr
     return curr
 
-def partition(S, means):
-    d = list((m, []) for m in means)
-    for s in S:
-        i, m = argmin(enumerate(means), lambda pr: euclid(pr[1],s))
-        m, l = d[i]
-        l.append(s)
-    return list(d)
+def partition(S):
+    from itertools import chain
+    all_points = []
+    for _, s in S:
+        all_points.extend(s)
+    all_means = list(map(lambda pr: pr[0], S))
+    res = list((m, []) for m, _ in S)
+    for p in all_points:
+        i, m = argmin(enumerate(all_means), lambda pr: euclid(pr[1], p))
+        res[i][1].append(p)
+    return res
 
 def reloc_ctr(S):
     for i, tpl in enumerate(S):
