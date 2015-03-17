@@ -226,7 +226,7 @@ if __name__ == "__main__":
     print("Nearest-neighbor precision: {}".format(prec))
     # Question 2.2
     # ------------
-    keystr = get_data("SELECT * FROM Keystrokes_Test_X")
+    keystr = get_data("SELECT * FROM Keystrokes_Train_X")
     # Perform PCA
     mn, princ_comp, proj, dec, enc = pca(keystr, 2)
     # TODO: Refactor the plotting of the eigenspectrum.
