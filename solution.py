@@ -127,8 +127,9 @@ def pca(data, m):
     plt.show()
     from bisect import bisect
     prec = .9
+    no = next(i for i, e in enumerate(cumulative) if e >= 0.9)+1
     print("We need {} eigen-vectors to account for {} of the variance". \
-        format(bisect(cumulative, prec), prec))
+        format(no, prec))
     return mn, U_m, z, dec, enc
 
 def cluster(S, k):
